@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -34,6 +34,7 @@ export function LoginForm() {
   const [APIError, setAPIError] = React.useState<string | null>(null);
   const setToken = useAuthStore((s) => s.setToken);
   const navigate = useNavigate();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,6 +49,7 @@ export function LoginForm() {
     mutationFn: loginHandler,
     onSuccess: (data: { token: string }) => {
       setToken(data.token);
+      router.invalidate(); // Force router to re-evaluate context
       navigate({ to: "/users" });
     },
     onError: (error) => {
