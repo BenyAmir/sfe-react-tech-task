@@ -9,27 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UsersCreateRouteImport } from './routes/users-create'
-import { Route as UsersUserIdRouteImport } from './routes/users-$userId'
-import { Route as UsersRouteImport } from './routes/users'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout'
+import { Route as LayoutUsersCreateRouteImport } from './routes/_layout/users-create'
+import { Route as LayoutUsersUserIdRouteImport } from './routes/_layout/users-$userId'
+import { Route as LayoutUsersRouteImport } from './routes/_layout/users'
 
-const UsersCreateRoute = UsersCreateRouteImport.update({
-  id: '/users-create',
-  path: '/users-create',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UsersUserIdRoute = UsersUserIdRouteImport.update({
-  id: '/users-$userId',
-  path: '/users-$userId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UsersRoute = UsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -39,26 +24,41 @@ const LayoutRoute = LayoutRouteImport.update({
   id: '/_layout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LayoutUsersCreateRoute = LayoutUsersCreateRouteImport.update({
+  id: '/users-create',
+  path: '/users-create',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutUsersUserIdRoute = LayoutUsersUserIdRouteImport.update({
+  id: '/users-$userId',
+  path: '/users-$userId',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutUsersRoute = LayoutUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => LayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
-  '/users': typeof UsersRoute
-  '/users-$userId': typeof UsersUserIdRoute
-  '/users-create': typeof UsersCreateRoute
+  '/users': typeof LayoutUsersRoute
+  '/users-$userId': typeof LayoutUsersUserIdRoute
+  '/users-create': typeof LayoutUsersCreateRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
-  '/users': typeof UsersRoute
-  '/users-$userId': typeof UsersUserIdRoute
-  '/users-create': typeof UsersCreateRoute
+  '/users': typeof LayoutUsersRoute
+  '/users-$userId': typeof LayoutUsersUserIdRoute
+  '/users-create': typeof LayoutUsersCreateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_layout': typeof LayoutRoute
+  '/_layout': typeof LayoutRouteWithChildren
   '/login': typeof LoginRoute
-  '/users': typeof UsersRoute
-  '/users-$userId': typeof UsersUserIdRoute
-  '/users-create': typeof UsersCreateRoute
+  '/_layout/users': typeof LayoutUsersRoute
+  '/_layout/users-$userId': typeof LayoutUsersUserIdRoute
+  '/_layout/users-create': typeof LayoutUsersCreateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -69,42 +69,18 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_layout'
     | '/login'
-    | '/users'
-    | '/users-$userId'
-    | '/users-create'
+    | '/_layout/users'
+    | '/_layout/users-$userId'
+    | '/_layout/users-create'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  LayoutRoute: typeof LayoutRoute
+  LayoutRoute: typeof LayoutRouteWithChildren
   LoginRoute: typeof LoginRoute
-  UsersRoute: typeof UsersRoute
-  UsersUserIdRoute: typeof UsersUserIdRoute
-  UsersCreateRoute: typeof UsersCreateRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/users-create': {
-      id: '/users-create'
-      path: '/users-create'
-      fullPath: '/users-create'
-      preLoaderRoute: typeof UsersCreateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/users-$userId': {
-      id: '/users-$userId'
-      path: '/users-$userId'
-      fullPath: '/users-$userId'
-      preLoaderRoute: typeof UsersUserIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/users': {
-      id: '/users'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof UsersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -119,15 +95,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_layout/users-create': {
+      id: '/_layout/users-create'
+      path: '/users-create'
+      fullPath: '/users-create'
+      preLoaderRoute: typeof LayoutUsersCreateRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/users-$userId': {
+      id: '/_layout/users-$userId'
+      path: '/users-$userId'
+      fullPath: '/users-$userId'
+      preLoaderRoute: typeof LayoutUsersUserIdRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/users': {
+      id: '/_layout/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof LayoutUsersRouteImport
+      parentRoute: typeof LayoutRoute
+    }
   }
 }
 
+interface LayoutRouteChildren {
+  LayoutUsersRoute: typeof LayoutUsersRoute
+  LayoutUsersUserIdRoute: typeof LayoutUsersUserIdRoute
+  LayoutUsersCreateRoute: typeof LayoutUsersCreateRoute
+}
+
+const LayoutRouteChildren: LayoutRouteChildren = {
+  LayoutUsersRoute: LayoutUsersRoute,
+  LayoutUsersUserIdRoute: LayoutUsersUserIdRoute,
+  LayoutUsersCreateRoute: LayoutUsersCreateRoute,
+}
+
+const LayoutRouteWithChildren =
+  LayoutRoute._addFileChildren(LayoutRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  LayoutRoute: LayoutRoute,
+  LayoutRoute: LayoutRouteWithChildren,
   LoginRoute: LoginRoute,
-  UsersRoute: UsersRoute,
-  UsersUserIdRoute: UsersUserIdRoute,
-  UsersCreateRoute: UsersCreateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
