@@ -11,3 +11,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   setToken: (token) => set({ token }),
   logout: () => set({ token: null }),
 }));
+
+export interface AuthenticationState {
+  isAuthenticated: boolean;
+};
+
