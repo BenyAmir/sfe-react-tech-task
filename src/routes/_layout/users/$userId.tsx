@@ -29,7 +29,12 @@ export const Route = createFileRoute("/_layout/users/$userId")({
 });
 
 const formSchema = z.object({
-  username: z.string().min(1, "Username is required"),
+  username: z
+    .string()
+    .min(1, "Username is required")
+    .refine((val) => !val.toLowerCase().includes("test"), {
+      message: "Username cannot contain 'test'",
+    }),
   password: z.string().min(1, "Password is required"),
   isAdmin: z.boolean(),
 });
