@@ -1,8 +1,6 @@
 import { NavigationComponent } from '@/components/navigation';
 import { useAuthStore } from '@/store/auth';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
-// TODO: Implement route protection here (redirect to /login if not authenticated)
-// You can use Zustand store (src/store/auth.ts) for auth state
 export const Route = createFileRoute('/_layout')({
   component: LayoutComponent,
   beforeLoad: () => {
@@ -14,6 +12,7 @@ export const Route = createFileRoute('/_layout')({
 });
 
 function LayoutComponent() {
+  const userName = useAuthStore((state) => state.name);
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
@@ -49,7 +48,7 @@ function LayoutComponent() {
                 <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
                   <span className="text-sm font-medium text-gray-600">AD</span>
                 </div>
-                <span className="text-sm font-medium text-gray-900">Admin</span>
+                <span className="text-sm font-medium text-gray-900">{userName}</span>
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
               </div>
             </div>
