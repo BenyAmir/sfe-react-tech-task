@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  const user = users.find(u => u.id === req.params.id);
+  const user = users.find(u => u.id === +req.params.id);
 
   if (!user) {
     return res.status(404).json({ message: 'User not found' });
