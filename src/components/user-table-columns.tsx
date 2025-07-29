@@ -7,13 +7,13 @@ import { Link } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Edit, LoaderCircle, Trash } from "lucide-react";
 
-interface User {
+export interface UserRow {
   username: string;
   role: "admin" | "user";
   id: number;
 }
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<UserRow>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -87,10 +87,12 @@ export const columns: ColumnDef<User>[] = [
               onClick={() => deleteUser(row.original.id)}
             >
               {isPending ? (
+              
                 <LoaderCircle
                   size={16}
-                  className=" cursor-pointer text-red-500 hover:text-red-700 text-sm"
+                  className="animate-spin cursor-pointer text-red-500 hover:text-red-700 text-sm"
                 />
+              
               ) : (
                 <Trash
                   size={16}

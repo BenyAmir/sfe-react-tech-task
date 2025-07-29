@@ -62,15 +62,31 @@ router.put('/:id', (req, res) => {
   res.json(users[index]);
 });
 
+
+
+// Group delete: /api/users/delete?ids=1,2,3
+router.delete('/delete', (req, res) => {
+  const idsParam = req.query.ids;
+  if (!idsParam) return res.status(400).json({ message: 'No ids provided' });
+  const ids = idsParam.split(',').map(Number);
+  let deleted = 0;
+  ids.forEach((id) => {
+    const index = users.findIndex((u) => u.id === id);
+    if (index !== -1) {
+      users.splice(index, 1);
+      delete tokens[id];
+      deleted++;
+    }
+  });
+  return res.json({ message: `Deleted ${deleted} users` });
+});
+
 router.delete('/:id', (req, res) => {
   const id = +req.params.id;
   const index = users.findIndex((u) => u.id === id);
-
   if (index === -1) return res.status(404).json({ message: 'User not found' });
-
   users.splice(index, 1);
-  delete tokens[id]; // Remove token if exists
-  
+  delete tokens[id];
   res.json({ message: 'User deleted successfully'});
 });
 

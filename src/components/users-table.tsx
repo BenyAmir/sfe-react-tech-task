@@ -1,3 +1,4 @@
+import { deleteUserApi } from "@/api/deleteUser";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -8,6 +9,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { UserRow } from "@/components/user-table-columns";
+import { useToken } from "@/store/auth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   flexRender,
   getCoreRowModel,
@@ -18,19 +22,15 @@ import {
   type ColumnDef,
   type ColumnFiltersState,
 } from "@tanstack/react-table";
-import { Trash } from "lucide-react";
+import { LoaderCircle, Trash } from "lucide-react";
 import React from "react";
-
 
 interface UsersTableProps<TData> {
   columns: ColumnDef<TData>[];
   data: TData[];
 }
 
-export function UsersTable<TData>({
-  columns,
-  data,
-}: UsersTableProps<TData>) {
+export function UsersTable({ columns, data }: UsersTableProps<UserRow>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -46,9 +46,27 @@ export function UsersTable<TData>({
     onRowSelectionChange: setRowSelection,
     state: {
       columnFilters,
-      rowSelection
+      rowSelection,
     },
+  });
 
+  const queryClient = useQueryClient();
+  const token = useToken();
+
+  const { mutate: deleteUser, isPending } = useMutation({
+    mutationFn: () => {
+      const ids = table
+        .getFilteredSelectedRowModel()
+        .rows.map((row) => row.original.id);
+      return deleteUserApi(ids, token);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      setRowSelection({});
+    },
+    onError: () => {
+      setRowSelection({});
+    },
   });
 
   return (
@@ -65,13 +83,29 @@ export function UsersTable<TData>({
           className="max-w-sm"
         />
 
-        {
-            rowSelection && Object.keys(rowSelection).length > 0 && (
-            <Button className="ml-4 cursor-pointer" variant="destructive" size="sm" onClick={()=> console.log(table.getFilteredSelectedRowModel().rows)}>
+        {rowSelection && Object.keys(rowSelection).length > 0 && (
+          <Button
+            className="ml-4 cursor-pointer"
+            variant="destructive"
+            size="sm"
+            disabled={isPending}
+            onClick={() => deleteUser()}
+          >
+            {isPending ? (
+              <span className="animate-spin">
+                <LoaderCircle
+                  size={16}
+                  className=" cursor-pointer text-red-500 hover:text-red-700 text-sm"
+                />
+              </span>
+            ) : (
+              <div className="flex items-center">
                 <Trash size={8} className="me-2" />
-                Delete Selected {table.getFilteredSelectedRowModel().rows.length} Rows
-            </Button>)
-        }
+                Delete {table.getFilteredSelectedRowModel().rows.length} Rows
+              </div>
+            )}
+          </Button>
+        )}
       </div>
       <div className="overflow-hidden rounded-md border">
         <Table>
