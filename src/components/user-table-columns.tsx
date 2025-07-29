@@ -57,7 +57,7 @@ export const columns: ColumnDef<User>[] = [
       const queryClient = useQueryClient();
       const token = useToken();
       const { mutate: deleteUser, isPending } = useMutation({
-        mutationFn: (id: string) => deleteUserApi(id, token),
+        mutationFn: (id: number) => deleteUserApi(id, token),
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["users"] });
         },
@@ -84,7 +84,7 @@ export const columns: ColumnDef<User>[] = [
             <Button
               className="flex cursor-pointer p-0 m-0"
               variant={"ghost"}
-              onClick={() => deleteUser(row.original.id.toString())}
+              onClick={() => deleteUser(row.original.id)}
             >
               {isPending ? (
                 <LoaderCircle

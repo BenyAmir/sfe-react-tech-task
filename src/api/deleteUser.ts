@@ -1,4 +1,4 @@
-export async function deleteUserApi(id: string, token: string | null) {
+export async function deleteUserApi(id: number, token: string | null) {
   const res = await fetch(`/api/users/${id}`, {
     method: "DELETE",
     headers: { authorization: `Bearer ${token}` },
