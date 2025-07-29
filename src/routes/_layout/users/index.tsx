@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_layout/users/")({
 });
 
 function UsersListPage() {
-  const { data } = useGetUsers()
+  const { data, isError, error } = useGetUsers();
 
   return (
     <div className="p-8">
@@ -23,6 +23,9 @@ function UsersListPage() {
           <span className="ms-2">New User</span>
         </Link>
       </div>
+      {isError && (
+        <div className="text-destructive text-sm">{error.message}</div>
+      )}
       <UsersTable columns={columns} data={data || []} />
     </div>
   );

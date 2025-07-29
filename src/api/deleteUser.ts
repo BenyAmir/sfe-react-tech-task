@@ -1,3 +1,4 @@
+import { ApiError } from "@/lib/utils";
 
 // If ids is an array, delete group; else, delete single
 export async function deleteUserApi(ids: number | number[], token: string | null) : Promise<void>  {
@@ -7,10 +8,22 @@ export async function deleteUserApi(ids: number | number[], token: string | null
   } else {
     url = `/api/users/${ids}`;
   }
-  const res = await fetch(url, {
+  const response = await fetch(url, {
     method: "DELETE",
-    headers: { authorization: `Bearer ${token}` },
+    headers: { authorization: `Bearer-${token}` },
   });
-  if (!res.ok) throw new Error("Failed to delete user");
-  return res.json();
+
+  const result = await response.json();
+    
+      if (!response.ok) {
+        throw new ApiError(
+          response.status === 401 ? 'Failed to delete' : `HTTP ${response.status}: ${response.statusText}`,
+          response.status,
+          response.statusText,
+          result,
+          response.headers
+        );
+      }
+    
+      return result;
 }

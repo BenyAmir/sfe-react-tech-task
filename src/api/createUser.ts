@@ -1,3 +1,4 @@
+import { ApiError } from "@/lib/utils";
 import type { UserModel, UserWithPassword } from "@/types/users";
 
 export async function createUserApi(
@@ -16,8 +17,18 @@ export async function createUserApi(
       role: data.isAdmin ? "admin" : "user",
     }),
   });
-  if (!response.ok) {
-    throw new Error("User creation failed");
-  }
-  return response.json();
+
+  const result = await response.json();
+  
+    if (!response.ok) {
+      throw new ApiError(
+        response.status === 401 ? 'User creation failed' : `HTTP ${response.status}: ${response.statusText}`,
+        response.status,
+        response.statusText,
+        result,
+        response.headers
+      );
+    }
+  
+    return result;
 };

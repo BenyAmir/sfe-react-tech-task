@@ -4,7 +4,6 @@ import type { LoginRequest, LoginResponse } from "@/types/auth";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
-
 export function useLogin() {
   const setToken = useAuthStore((s) => s.setToken);
   const setUserName = useAuthStore((s) => s.setUserName);
@@ -19,10 +18,6 @@ export function useLogin() {
       localStorage.setItem("userName", data.user.username);
       setUserName(data.user.username);
       navigate({ to: "/users" });
-
-    },
-    onError: (error) => {
-      console.error("Login failed:", error.message);
     },
   });
 }

@@ -38,7 +38,7 @@ export function LoginForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel htmlFor="username">Username</FormLabel>
-                  <Input id="username" required autoFocus {...field} />
+                  <Input id="username" autoFocus {...field} />
                 </FormItem>
               )}
             />
@@ -48,7 +48,7 @@ export function LoginForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel htmlFor="password">Password</FormLabel>
-                  <Input id="password" type="password" required {...field} />
+                  <Input id="password" type="password" {...field} />
                 </FormItem>
               )}
             />

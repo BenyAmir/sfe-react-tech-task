@@ -1,6 +1,10 @@
 import { NavigationComponent } from '@/components/navigation';
+
 import { useAuthStore } from '@/store/auth';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
+import { Toaster } from 'sonner';
+
+
 export const Route = createFileRoute('/_layout')({
   component: LayoutComponent,
   beforeLoad: () => {
@@ -66,6 +70,7 @@ function LayoutComponent() {
             </div>
           </div>
         </main>
+        <Toaster/>
       </div>
     </div>
   );

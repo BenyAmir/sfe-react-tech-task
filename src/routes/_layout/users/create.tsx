@@ -30,8 +30,6 @@ const formSchema = z.object({
 });
 
 function UserCreatePage() {
-  // TODO: Implement user creation form with validation (use shadcn/ui components)
-  // TODO: Submit form to API and handle errors
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,7 +39,7 @@ function UserCreatePage() {
     },
   });
 
-  const { isPending, mutate: createUser, error } = useCreateUser();
+  const { isPending, mutate: createUser, error, isError } = useCreateUser();
 
   return (
     <div className="p-8">
@@ -96,6 +94,10 @@ function UserCreatePage() {
             <div className="text-destructive text-sm">
               {form.formState.errors.password.message}
             </div>
+          )}
+
+          {isError && (
+            <div className="text-destructive text-sm">{error.message}</div>
           )}
 
           <Button className="w-full" type="submit" disabled={isPending}>

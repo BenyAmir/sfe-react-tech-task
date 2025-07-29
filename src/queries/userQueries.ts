@@ -7,6 +7,8 @@ import type { User, UserModel, UserWithPassword } from "@/types/users";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import type { Table } from "@tanstack/react-table";
+import { toast } from "sonner";
+
 
 export function useGetUsers() {
   const token = useToken();
@@ -26,9 +28,6 @@ export function useCreateUser() {
     onSuccess: () => {
       navigate({ to: "/users" });
     },
-    onError(error: Error) {
-      console.error("Error creating user:", error.message);
-    },
   });
 }
 
@@ -41,9 +40,6 @@ export function useEditUser({ id }: { id: number }) {
     onSuccess: () => {
       navigate({ to: "/users" });
     },
-    onError(error: Error) {
-      console.error("Error creating user:", error.message);
-    },
   });
 }
 
@@ -55,6 +51,9 @@ export function useDeleteUser() {
     mutationFn: (id: number) => deleteUserApi(id, token),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to delete user: ${error.message}`);
     },
   });
 }
@@ -84,6 +83,7 @@ export function useDeleteUsersInTable({
     },
     onError: () => {
       setRowSelection({});
+      toast.error("Failed to delete users");
     },
   });
 }
