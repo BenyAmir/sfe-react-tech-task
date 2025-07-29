@@ -3,9 +3,7 @@ import { useToken } from "@/store/auth";
 import { useQuery } from "@tanstack/react-query";
 import {
   createFileRoute,
-  Link,
-  useNavigate,
-  useRouter,
+  Link
 } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 
@@ -36,7 +34,7 @@ function UsersListPage() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Users</h1>
-          <Link to="/users-create" className="flex items-center px-3 py-2 border bg-blue-300  rounded-lg hover:bg-blue-700 transition-colors">
+          <Link to="/users-create" className="flex items-center px-3 py-2 border bg-blue-300 rounded-lg hover:bg-blue-400 transition-colors">
           <Plus />
           <span className="ms-2">New User</span>
           </Link>
