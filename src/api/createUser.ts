@@ -1,13 +1,9 @@
-interface User {
-    username:string,
-    password:string,
-    isAdmin:boolean
-}
+import type { UserCreateModel, UserWithPassword } from "@/types/users";
 
 export async function createUserApi(
-  data: User,
+  data: UserCreateModel,
   token: string | null
-) {
+) : Promise<UserWithPassword> {
   const response = await fetch("http://localhost:3000/api/users/create", {
     method: "POST",
     headers: {

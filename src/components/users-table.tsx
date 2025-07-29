@@ -9,8 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { UserRow } from "@/components/user-table-columns";
 import { useToken } from "@/store/auth";
+import type { User } from "@/types/users";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   flexRender,
@@ -30,7 +30,7 @@ interface UsersTableProps<TData> {
   data: TData[];
 }
 
-export function UsersTable({ columns, data }: UsersTableProps<UserRow>) {
+export function UsersTable({ columns, data }: UsersTableProps<User>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []

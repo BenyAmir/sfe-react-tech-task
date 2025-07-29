@@ -2,6 +2,7 @@ import { getUsersApi } from "@/api/getUsers";
 import { columns } from "@/components/user-table-columns";
 import { UsersTable } from "@/components/users-table";
 import { useToken } from "@/store/auth";
+import type { User } from "@/types/users";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
@@ -13,7 +14,7 @@ export const Route = createFileRoute("/_layout/users")({
 function UsersListPage() {
   const token = useToken();
 
-  const { data } = useQuery({
+  const { data } = useQuery<User[]>({
     queryKey: ["users"],
     queryFn: () => getUsersApi(token)
   });

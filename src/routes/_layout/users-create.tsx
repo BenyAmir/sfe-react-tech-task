@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useToken } from "@/store/auth";
+import type { UserCreateModel, UserWithPassword } from "@/types/users";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -41,8 +42,8 @@ function UserCreatePage() {
     },
   });
 
-  const { isPending, mutate, error } = useMutation({
-    mutationFn: () => createUserApi(form.getValues(), token),
+  const { isPending, mutate:createUser, error } = useMutation<UserWithPassword, Error, UserCreateModel>({
+    mutationFn: (data: UserCreateModel) => createUserApi(data, token),
     onSuccess: () => {
       navigate({ to: "/users" });
     },
@@ -57,7 +58,7 @@ function UserCreatePage() {
 
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(() => mutate())}
+          onSubmit={form.handleSubmit((data) => createUser(data))}
           className="space-y-4"
         >
           <FormField

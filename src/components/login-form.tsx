@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/auth";
+import type { LoginRequest, LoginResponse } from "@/types/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate, useRouter } from "@tanstack/react-router";
@@ -23,7 +24,7 @@ export function LoginForm() {
   const navigate = useNavigate();
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<LoginRequest>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
@@ -31,7 +32,7 @@ export function LoginForm() {
     },
   });
 
-  const {isPending,mutate} = useMutation({
+  const {isPending, mutate:login} = useMutation<LoginResponse, Error, LoginRequest>({
     mutationKey: ["login"],
     mutationFn: loginHandler,
     onSuccess: (data: { token: string }) => {
@@ -49,7 +50,7 @@ export function LoginForm() {
       <div className="w-full max-w-md p-8 bg-card rounded-lg shadow">
         <h1 className="text-2xl font-bold mb-6">Login</h1>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit((data) => mutate(data))} className="space-y-4">
+          <form onSubmit={form.handleSubmit((data) => login(data))} className="space-y-4">
             <FormField
               control={form.control}
               name="username"

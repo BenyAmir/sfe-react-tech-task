@@ -2,18 +2,13 @@ import { deleteUserApi } from "@/api/deleteUser";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToken } from "@/store/auth";
+import type { User } from "@/types/users";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Edit, LoaderCircle, Trash } from "lucide-react";
 
-export interface UserRow {
-  username: string;
-  role: "admin" | "user";
-  id: number;
-}
-
-export const columns: ColumnDef<UserRow>[] = [
+export const columns: ColumnDef<User>[] = [
   {
     id: "select",
     header: ({ table }) => (
