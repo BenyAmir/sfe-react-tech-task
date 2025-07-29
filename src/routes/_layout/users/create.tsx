@@ -14,7 +14,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export const Route = createFileRoute("/_layout/users-create")({
+export const Route = createFileRoute("/_layout/users/create")({
   component: UserCreatePage,
 });
 
