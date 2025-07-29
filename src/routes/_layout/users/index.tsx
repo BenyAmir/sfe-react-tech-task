@@ -4,7 +4,7 @@ import { useGetUsers } from "@/queries/userQueries";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 
-export const Route = createFileRoute("/_layout/users")({
+export const Route = createFileRoute("/_layout/users/")({
   component: UsersListPage,
 });
 

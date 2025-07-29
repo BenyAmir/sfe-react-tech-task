@@ -58,7 +58,7 @@ export const columns: ColumnDef<User>[] = [
           )}
           <div className="flex items-center">
             <Link
-              to={"/users-$userId"}
+              to={"/users/$userId"}
               params={{ userId: row.original.id.toString() }}
               className="flex cursor-pointer p-0 m-0"
             >

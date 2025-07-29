@@ -1,8 +1,9 @@
 import { createUserApi } from "@/api/createUser";
 import { deleteUserApi } from "@/api/deleteUser";
+import { editUserApi } from "@/api/editUsers";
 import { getUsersApi } from "@/api/getUsers";
 import { useToken } from "@/store/auth";
-import type { User, UserCreateModel, UserWithPassword } from "@/types/users";
+import type { User, UserModel, UserWithPassword } from "@/types/users";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import type { Table } from "@tanstack/react-table";
@@ -20,8 +21,23 @@ export function useCreateUser() {
   const token = useToken();
   const navigate = useNavigate();
 
-  return useMutation<UserWithPassword, Error, UserCreateModel>({
-    mutationFn: (data: UserCreateModel) => createUserApi(data, token),
+  return useMutation<UserWithPassword, Error, UserModel>({
+    mutationFn: (data: UserModel) => createUserApi(data, token),
+    onSuccess: () => {
+      navigate({ to: "/users" });
+    },
+    onError(error: Error) {
+      console.error("Error creating user:", error.message);
+    },
+  });
+}
+
+export function useEditUser({ id }: { id: number }) {
+  const token = useToken();
+  const navigate = useNavigate();
+
+  return useMutation<UserWithPassword, Error, UserModel>({
+    mutationFn: (data) => editUserApi(id, data, token),
     onSuccess: () => {
       navigate({ to: "/users" });
     },

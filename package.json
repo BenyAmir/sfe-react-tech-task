@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "router:generate": "tanstack-router-cli generate"
+    "router:generate": "tsr generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.0",

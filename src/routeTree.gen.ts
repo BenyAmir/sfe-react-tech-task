@@ -12,8 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as LayoutUsersCreateRouteImport } from './routes/_layout/users-create'
-import { Route as LayoutUsersUserIdRouteImport } from './routes/_layout/users-$userId'
-import { Route as LayoutUsersRouteImport } from './routes/_layout/users'
+import { Route as LayoutUsersIndexRouteImport } from './routes/_layout/users/index'
+import { Route as LayoutUsersUserIdRouteImport } from './routes/_layout/users/$userId'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -29,49 +29,49 @@ const LayoutUsersCreateRoute = LayoutUsersCreateRouteImport.update({
   path: '/users-create',
   getParentRoute: () => LayoutRoute,
 } as any)
-const LayoutUsersUserIdRoute = LayoutUsersUserIdRouteImport.update({
-  id: '/users-$userId',
-  path: '/users-$userId',
+const LayoutUsersIndexRoute = LayoutUsersIndexRouteImport.update({
+  id: '/users/',
+  path: '/users/',
   getParentRoute: () => LayoutRoute,
 } as any)
-const LayoutUsersRoute = LayoutUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
+const LayoutUsersUserIdRoute = LayoutUsersUserIdRouteImport.update({
+  id: '/users/$userId',
+  path: '/users/$userId',
   getParentRoute: () => LayoutRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
-  '/users': typeof LayoutUsersRoute
-  '/users-$userId': typeof LayoutUsersUserIdRoute
   '/users-create': typeof LayoutUsersCreateRoute
+  '/users/$userId': typeof LayoutUsersUserIdRoute
+  '/users': typeof LayoutUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
-  '/users': typeof LayoutUsersRoute
-  '/users-$userId': typeof LayoutUsersUserIdRoute
   '/users-create': typeof LayoutUsersCreateRoute
+  '/users/$userId': typeof LayoutUsersUserIdRoute
+  '/users': typeof LayoutUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_layout': typeof LayoutRouteWithChildren
   '/login': typeof LoginRoute
-  '/_layout/users': typeof LayoutUsersRoute
-  '/_layout/users-$userId': typeof LayoutUsersUserIdRoute
   '/_layout/users-create': typeof LayoutUsersCreateRoute
+  '/_layout/users/$userId': typeof LayoutUsersUserIdRoute
+  '/_layout/users/': typeof LayoutUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/login' | '/users' | '/users-$userId' | '/users-create'
+  fullPaths: '/login' | '/users-create' | '/users/$userId' | '/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/users' | '/users-$userId' | '/users-create'
+  to: '/login' | '/users-create' | '/users/$userId' | '/users'
   id:
     | '__root__'
     | '/_layout'
     | '/login'
-    | '/_layout/users'
-    | '/_layout/users-$userId'
     | '/_layout/users-create'
+    | '/_layout/users/$userId'
+    | '/_layout/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -102,33 +102,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutUsersCreateRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/_layout/users-$userId': {
-      id: '/_layout/users-$userId'
-      path: '/users-$userId'
-      fullPath: '/users-$userId'
-      preLoaderRoute: typeof LayoutUsersUserIdRouteImport
-      parentRoute: typeof LayoutRoute
-    }
-    '/_layout/users': {
-      id: '/_layout/users'
+    '/_layout/users/': {
+      id: '/_layout/users/'
       path: '/users'
       fullPath: '/users'
-      preLoaderRoute: typeof LayoutUsersRouteImport
+      preLoaderRoute: typeof LayoutUsersIndexRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/users/$userId': {
+      id: '/_layout/users/$userId'
+      path: '/users/$userId'
+      fullPath: '/users/$userId'
+      preLoaderRoute: typeof LayoutUsersUserIdRouteImport
       parentRoute: typeof LayoutRoute
     }
   }
 }
 
 interface LayoutRouteChildren {
-  LayoutUsersRoute: typeof LayoutUsersRoute
-  LayoutUsersUserIdRoute: typeof LayoutUsersUserIdRoute
   LayoutUsersCreateRoute: typeof LayoutUsersCreateRoute
+  LayoutUsersUserIdRoute: typeof LayoutUsersUserIdRoute
+  LayoutUsersIndexRoute: typeof LayoutUsersIndexRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
-  LayoutUsersRoute: LayoutUsersRoute,
-  LayoutUsersUserIdRoute: LayoutUsersUserIdRoute,
   LayoutUsersCreateRoute: LayoutUsersCreateRoute,
+  LayoutUsersUserIdRoute: LayoutUsersUserIdRoute,
+  LayoutUsersIndexRoute: LayoutUsersIndexRoute,
 }
 
 const LayoutRouteWithChildren =
