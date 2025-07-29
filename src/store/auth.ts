@@ -16,3 +16,5 @@ export interface AuthenticationState {
   isAuthenticated: boolean;
 };
 
+export const useToken = () => useAuthStore((state) => state.token);
+

@@ -1,17 +1,47 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { columns, UsersTable } from "@/components/users-table";
+import { useToken } from "@/store/auth";
+import { useQuery } from "@tanstack/react-query";
+import {
+  createFileRoute,
+  Link,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
+import { Plus } from "lucide-react";
 
-export const Route = createFileRoute('/_layout/users')({
+export const Route = createFileRoute("/_layout/users")({
   component: UsersListPage,
 });
 
+
+
 function UsersListPage() {
-  // TODO: Fetch users from API using TanStack Query
-  // TODO: Display users in a table using shadcn/ui components
   // TODO: Add actions for edit and delete
+  const token = useToken();
+
+
+  const {data} = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const response = await fetch("http://localhost:3000/api/users",{
+            headers: { "authorization": `Bearer ${token}` || "" },
+      });
+      return response.json();
+    },
+  });
+
+
+
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Users</h1>
-      <p className="text-muted-foreground">Users list coming soon...</p>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold">Users</h1>
+          <Link to="/users-create" className="flex items-center px-3 py-2 border bg-blue-300  rounded-lg hover:bg-blue-700 transition-colors">
+          <Plus />
+          <span className="ms-2">New User</span>
+          </Link>
+      </div>
+      <UsersTable columns={columns} data={data || []}/>
     </div>
   );
 }
