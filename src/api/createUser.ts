@@ -1,10 +1,10 @@
-import type { UserCreateModel, UserWithPassword } from "@/types/users";
+import type { UserModel, UserWithPassword } from "@/types/users";
 
 export async function createUserApi(
-  data: UserCreateModel,
+  data: UserModel,
   token: string | null
 ) : Promise<UserWithPassword> {
-  const response = await fetch("http://localhost:3000/api/users/create", {
+  const response = await fetch("/api/users/create", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
