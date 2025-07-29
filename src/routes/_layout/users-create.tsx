@@ -1,4 +1,3 @@
-import { createUserApi } from "@/api/createUser";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -9,11 +8,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { useToken } from "@/store/auth";
-import type { UserCreateModel, UserWithPassword } from "@/types/users";
+import { useCreateUser } from "@/queries/userQueries";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -30,9 +27,6 @@ const formSchema = z.object({
 function UserCreatePage() {
   // TODO: Implement user creation form with validation (use shadcn/ui components)
   // TODO: Submit form to API and handle errors
-  const token = useToken();
-  const navigate = useNavigate();
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,16 +36,8 @@ function UserCreatePage() {
     },
   });
 
-  const { isPending, mutate:createUser, error } = useMutation<UserWithPassword, Error, UserCreateModel>({
-    mutationFn: (data: UserCreateModel) => createUserApi(data, token),
-    onSuccess: () => {
-      navigate({ to: "/users" });
-    },
-    onError(error: Error) {
-      console.error("Error creating user:", error.message);
-      form.setError("root", { message: error.message });
-    },
-  });
+  const { isPending, mutate:createUser, error } = useCreateUser();
+  
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-6">Create User</h1>

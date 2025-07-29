@@ -1,4 +1,3 @@
-import { deleteUserApi } from "@/api/deleteUser";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -9,9 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useToken } from "@/store/auth";
+import { useDeleteUsersInTable } from "@/queries/userQueries";
 import type { User } from "@/types/users";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   flexRender,
   getCoreRowModel,
@@ -50,24 +48,8 @@ export function UsersTable({ columns, data }: UsersTableProps<User>) {
     },
   });
 
-  const queryClient = useQueryClient();
-  const token = useToken();
-
-  const { mutate: deleteUser, isPending } = useMutation({
-    mutationFn: () => {
-      const ids = table
-        .getFilteredSelectedRowModel()
-        .rows.map((row) => row.original.id);
-      return deleteUserApi(ids, token);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-      setRowSelection({});
-    },
-    onError: () => {
-      setRowSelection({});
-    },
-  });
+  
+  const { mutate: deleteUser, isPending } = useDeleteUsersInTable({table, setRowSelection});
 
   return (
     <div>

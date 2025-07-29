@@ -1,15 +1,11 @@
 "use client";
 
-import { loginHandler } from "@/api/login";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useAuthStore } from "@/store/auth";
-import type { LoginRequest, LoginResponse } from "@/types/auth";
+import { useLogin } from "@/queries/authQueries";
+import type { LoginRequest } from "@/types/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate, useRouter } from "@tanstack/react-router";
-import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -19,11 +15,7 @@ const formSchema = z.object({
 });
 
 export function LoginForm() {
-  const [APIError, setAPIError] = React.useState<string | null>(null);
-  const setToken = useAuthStore((s) => s.setToken);
-  const navigate = useNavigate();
-  const router = useRouter();
-
+  
   const form = useForm<LoginRequest>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -32,18 +24,7 @@ export function LoginForm() {
     },
   });
 
-  const {isPending, mutate:login} = useMutation<LoginResponse, Error, LoginRequest>({
-    mutationKey: ["login"],
-    mutationFn: loginHandler,
-    onSuccess: (data: { token: string }) => {
-      setToken(data.token);
-      router.invalidate(); // Force router to re-evaluate context
-      navigate({ to: "/users" });
-    },
-    onError: (error) => {
-      setAPIError(error.message || "Login failed. Please try again.");
-    },
-  });
+  const {isPending, mutate:login, error, isError} = useLogin();
 
   return (
     <div className="flex min-h-screen items-center justify-center">
@@ -82,8 +63,8 @@ export function LoginForm() {
               </div>
             )}
             
-            {APIError && (
-              <div className="text-destructive text-sm">{APIError}</div>
+            {isError && (
+              <div className="text-destructive text-sm">{error.message}</div>
             )}
             
             <Button className="w-full" type="submit" disabled={isPending}>

@@ -1,9 +1,7 @@
-import { deleteUserApi } from "@/api/deleteUser";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useToken } from "@/store/auth";
+import { useDeleteUser } from "@/queries/userQueries";
 import type { User } from "@/types/users";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Edit, LoaderCircle, Trash } from "lucide-react";
@@ -49,14 +47,7 @@ export const columns: ColumnDef<User>[] = [
       );
     },
     cell: ({ row }) => {
-      const queryClient = useQueryClient();
-      const token = useToken();
-      const { mutate: deleteUser, isPending } = useMutation({
-        mutationFn: (id: number) => deleteUserApi(id, token),
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["users"] });
-        },
-      });
+      const { mutate: deleteUser, isPending } = useDeleteUser();
 
       return (
         <div className="flex items-center justify-between">

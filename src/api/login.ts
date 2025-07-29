@@ -1,6 +1,6 @@
 import type { LoginRequest, LoginResponse } from "@/types/auth";
 
-export async function loginHandler(data: LoginRequest): Promise<LoginResponse> {
+export async function login(data: LoginRequest): Promise<LoginResponse> {
   const response = await fetch("http://localhost:3000/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
