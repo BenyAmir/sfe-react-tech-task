@@ -1,3 +1,4 @@
+import { createUserApi } from "@/api/createUser";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -25,28 +26,6 @@ const formSchema = z.object({
   isAdmin: z.boolean(),
 });
 
-const createUser = async (
-  data: z.infer<typeof formSchema>,
-  token: string | null
-) => {
-  const response = await fetch("http://localhost:3000/api/users/create", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      username: data.username,
-      password: data.password,
-      role: data.isAdmin ? "admin" : "user",
-    }),
-  });
-  if (!response.ok) {
-    throw new Error("User creation failed");
-  }
-  return response.json();
-};
-
 function UserCreatePage() {
   // TODO: Implement user creation form with validation (use shadcn/ui components)
   // TODO: Submit form to API and handle errors
@@ -63,7 +42,7 @@ function UserCreatePage() {
   });
 
   const { isPending, mutate, error } = useMutation({
-    mutationFn: () => createUser(form.getValues(), token),
+    mutationFn: () => createUserApi(form.getValues(), token),
     onSuccess: () => {
       navigate({ to: "/users" });
     },
@@ -135,3 +114,4 @@ function UserCreatePage() {
     </div>
   );
 }
+

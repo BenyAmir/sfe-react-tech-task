@@ -1,3 +1,4 @@
+import { getUsersApi } from "@/api/getUsers";
 import { columns } from "@/components/user-table-columns";
 import { UsersTable } from "@/components/users-table";
 import { useToken } from "@/store/auth";
@@ -14,12 +15,7 @@ function UsersListPage() {
 
   const { data } = useQuery({
     queryKey: ["users"],
-    queryFn: async () => {
-      const response = await fetch("http://localhost:3000/api/users", {
-        headers: { authorization: `Bearer ${token}` || "" },
-      });
-      return response.json();
-    },
+    queryFn: () => getUsersApi(token)
   });
 
   return (

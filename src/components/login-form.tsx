@@ -1,5 +1,6 @@
 "use client";
 
+import { loginHandler } from "@/api/login";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -15,20 +16,6 @@ const formSchema = z.object({
   username: z.string().min(1, "Username is required"),
   password: z.string().min(1, "Password is required"),
 });
-
-const loginHandler = async (data: z.infer<typeof formSchema>) => {
-  const response = await fetch("http://localhost:3000/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username: data.username, password: data.password }),
-  });
-  
-  if (!response.ok) {
-    throw new Error('Login failed');
-  }
-  
-  return response.json();
-};
 
 export function LoginForm() {
   const [APIError, setAPIError] = React.useState<string | null>(null);
