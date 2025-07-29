@@ -1,16 +1,137 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { useToken } from "@/store/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-export const Route = createFileRoute('/_layout/users-create')({
+export const Route = createFileRoute("/_layout/users-create")({
   component: UserCreatePage,
 });
+
+const formSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required"),
+  isAdmin: z.boolean(),
+});
+
+const createUser = async (
+  data: z.infer<typeof formSchema>,
+  token: string | null
+) => {
+  const response = await fetch("http://localhost:3000/api/users/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      username: data.username,
+      password: data.password,
+      role: data.isAdmin ? "admin" : "user",
+    }),
+  });
+  if (!response.ok) {
+    throw new Error("User creation failed");
+  }
+  return response.json();
+};
 
 function UserCreatePage() {
   // TODO: Implement user creation form with validation (use shadcn/ui components)
   // TODO: Submit form to API and handle errors
+  const token = useToken();
+  const navigate = useNavigate();
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+      isAdmin: false,
+    },
+  });
+
+  const { isPending, mutate, error } = useMutation({
+    mutationFn: () => createUser(form.getValues(), token),
+    onSuccess: () => {
+      navigate({ to: "/users" });
+    },
+    onError(error: Error) {
+      console.error("Error creating user:", error.message);
+      form.setError("root", { message: error.message });
+    },
+  });
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-6">Create User</h1>
-      <p className="text-muted-foreground">User creation form coming soon...</p>
+
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(() => mutate())}
+          className="space-y-4"
+        >
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel htmlFor="username">Username</FormLabel>
+                <Input id="username" autoFocus {...field} />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel htmlFor="password">Password</FormLabel>
+                <Input id="password" type="password" {...field} />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="isAdmin"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel htmlFor="isAdmin">isAdmin</FormLabel>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          {form.formState.errors.username && (
+            <div className="text-destructive text-sm">
+              {form.formState.errors.username.message}
+            </div>
+          )}
+          {form.formState.errors.password && (
+            <div className="text-destructive text-sm">
+              {form.formState.errors.password.message}
+            </div>
+          )}
+
+          <Button className="w-full" type="submit" disabled={isPending}>
+            {isPending ? "Creating..." : "create User"}
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 }
