@@ -13,6 +13,7 @@ export function useLogin() {
     mutationFn: login,
     onSuccess: (data: { token: string }) => {
       setToken(data.token);
+      localStorage.setItem("token", data.token);
       navigate({ to: "/users" });
     },
     onError: (error) => {
