@@ -62,4 +62,16 @@ router.put('/:id', (req, res) => {
   res.json(users[index]);
 });
 
+router.delete('/:id', (req, res) => {
+  const id = +req.params.id;
+  const index = users.findIndex((u) => u.id === id);
+
+  if (index === -1) return res.status(404).json({ message: 'User not found' });
+
+  users.splice(index, 1);
+  delete tokens[id]; // Remove token if exists
+  
+  res.json({ message: 'User deleted successfully'});
+});
+
 module.exports = router;
