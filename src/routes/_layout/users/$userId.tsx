@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useEditUser } from "@/queries/userQueries";
-import { useAuthStore } from "@/store/auth";
+import { useAuthStore, useIsAdmin } from "@/store/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute } from "@tanstack/react-router";
 import { LoaderCircle } from "lucide-react";
@@ -57,6 +57,7 @@ function UserEditPage() {
     error,
     isError,
   } = useEditUser({ id: user.id });
+    const isAdmin = useIsAdmin();
 
   return (
     <div className="p-8">
@@ -116,17 +117,17 @@ function UserEditPage() {
             <div className="text-destructive text-sm">{error.message}</div>
           )}
 
-          <Button className="w-full" type="submit" disabled={isPending}>
+          <Button className="w-full" type="submit" disabled={isPending || !isAdmin}>
             {isPending ? (
               <div className="flex items-center">
                 <LoaderCircle
                   size={16}
                   className="animate-spin cursor-pointer text-red-500 hover:text-red-700 text-sm"
                 />
-                <span>"Creating..."</span>
+                <span>"Updating..."</span>
               </div>
             ) : (
-              "Edit User"
+              "Save"
             )}
           </Button>
         </form>

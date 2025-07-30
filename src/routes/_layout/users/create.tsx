@@ -9,6 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useCreateUser } from "@/queries/userQueries";
+import { useIsAdmin } from "@/store/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
@@ -40,6 +41,7 @@ function UserCreatePage() {
   });
 
   const { isPending, mutate: createUser, error, isError } = useCreateUser();
+  const isAdmin = useIsAdmin();
 
   return (
     <div className="p-8">
@@ -100,7 +102,7 @@ function UserCreatePage() {
             <div className="text-destructive text-sm">{error.message}</div>
           )}
 
-          <Button className="w-full" type="submit" disabled={isPending}>
+          <Button className="w-full" type="submit" disabled={isPending || !isAdmin}>
             {isPending ? "Creating..." : "create User"}
           </Button>
         </form>

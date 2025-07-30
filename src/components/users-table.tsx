@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useDeleteUsersInTable } from "@/queries/userQueries";
+import { useIsAdmin } from "@/store/auth";
 import type { User } from "@/types/users";
 import {
   flexRender,
@@ -50,6 +51,7 @@ export function UsersTable({ columns, data }: UsersTableProps<User>) {
 
   
   const { mutate: deleteUser, isPending } = useDeleteUsersInTable({table, setRowSelection});
+  const isAdmin = useIsAdmin(); 
 
   return (
     <div>
@@ -70,7 +72,7 @@ export function UsersTable({ columns, data }: UsersTableProps<User>) {
             className="ml-4 cursor-pointer"
             variant="destructive"
             size="sm"
-            disabled={isPending}
+            disabled={isPending || !isAdmin}
             onClick={() => deleteUser()}
           >
             {isPending ? (

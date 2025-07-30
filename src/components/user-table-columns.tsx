@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useDeleteUser } from "@/queries/userQueries";
+import { useIsAdmin } from "@/store/auth";
 import type { User } from "@/types/users";
 import { Link } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -48,7 +49,7 @@ export const columns: ColumnDef<User>[] = [
     },
     cell: ({ row }) => {
       const { mutate: deleteUser, isPending } = useDeleteUser();
-
+      const isAdmin = useIsAdmin()
       return (
         <div className="flex items-center justify-between">
           {row.getValue("role") === "admin" ? (
@@ -60,6 +61,7 @@ export const columns: ColumnDef<User>[] = [
             <Link
               to={"/users/$userId"}
               params={{ userId: row.original.id.toString() }}
+              disabled={!isAdmin}
               className="flex cursor-pointer p-0 m-0"
             >
               <Edit
@@ -70,6 +72,7 @@ export const columns: ColumnDef<User>[] = [
             <Button
               className="flex cursor-pointer p-0 m-0"
               variant={"ghost"}
+              disabled={!isAdmin || isPending}
               onClick={() => deleteUser(row.original.id)}
             >
               {isPending ? (
