@@ -1,20 +1,21 @@
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { useAuthStore } from "@/store/auth";
-import {
-  Link,
-  useNavigate
-} from "@tanstack/react-router";
+import { useSetTheme, useTheme } from "@/store/theme";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 import { LogOut } from "lucide-react";
 
 export function NavigationComponent() {
   const logOut = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
-  
-  const handleLogOut = () =>{
+  const theme = useTheme();
+  const setTheme = useSetTheme();
+
+  const handleLogOut = () => {
     logOut();
     navigate({ to: "/login" });
-  }
+  };
 
   return (
     <div className="flex flex-col flex-1 p-4 space-y-6">
@@ -43,17 +44,26 @@ export function NavigationComponent() {
       </div>
 
       <div className="pt-3 border-t border-gray-200">
-            <div className="space-y-1">
-                <Button
-                  className="flex items-center w-full px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
-                  variant="ghost"
-                  onClick={()=>handleLogOut()}
-                >
-                  <LogOut/>
-                  <span className="ms-2">Logout</span>
-                </Button>
-            </div>
-          </div>
+        <div className="flex items-center space-x-2">
+          <span className="text-xs">🌞</span>
+          <Switch
+            checked={theme === "dark"}
+            onCheckedChange={(checked:boolean) => {
+              setTheme(checked ? "dark" : "light");
+            }}
+          />
+          <span className="text-xs">🌙</span>
+
+          <Button
+            className="flex items-center  px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+            variant="ghost"
+            onClick={() => handleLogOut()}
+          >
+            <LogOut />
+            <span className="ms-2">Logout</span>
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
