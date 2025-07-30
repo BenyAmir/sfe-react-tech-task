@@ -10,7 +10,7 @@ export async function deleteUserApi(ids: number | number[], token: string | null
   }
   const response = await fetch(url, {
     method: "DELETE",
-    headers: { authorization: `Bearer-${token}` },
+    headers: { authorization: `Bearer ${token}` },
   });
 
   const result = await response.json();
