@@ -13,8 +13,6 @@ export function NavigationComponent() {
   
   const handleLogOut = () =>{
     logOut();
-    localStorage.removeItem("token");
-    localStorage.removeItem("userName");
     navigate({ to: "/login" });
   }
 
